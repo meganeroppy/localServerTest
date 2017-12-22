@@ -31,5 +31,11 @@ public class CPlayer : MonoBehaviour {
 	[RPC]
 	void GetItem(int add) {
 		iItemCount += add;
+		netView.RPC("SetItemCount", RPCMode.OthersBuffered, iItemCount);
+	}
+
+	[RPC]
+	void SetItemCount(int ic) {
+		iItemCount = ic;
 	}
 }
