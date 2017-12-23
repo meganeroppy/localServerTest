@@ -30,6 +30,7 @@ public class CItem : MonoBehaviour {
 				// アイテムがネットワーク先の場合
 				// アイテムの管理者をownerで指定して、RPC越しに呼び出す
 				netView.RPC("PickupItem", netView.owner, netplayer.viewID);
+
 			}
 		}
 	}

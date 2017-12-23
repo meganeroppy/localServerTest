@@ -1,17 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
+
 public class CPlayer : MonoBehaviour {
 	private Rigidbody myRigidbody;
 	public float fSpeed = 10f;
 	private NetworkView netView = null;
 	public int iItemCount = 0;
 	private TextMesh textItem = null;
+	private NetworkTransform nTransform = null;
+	private NetworkIdentity nIdentity = null;
 
 	// Use this for initialization
 	void Start () {
 		myRigidbody = GetComponent<Rigidbody>();
 		netView = GetComponent<NetworkView>();
 		textItem = GetComponentInChildren<TextMesh>();
+		nTransform = GetComponent<NetworkTransform>();
+		nIdentity = GetComponent<NetworkIdentity>();
 	}
 
 	// Update is called once per frame
@@ -35,6 +41,7 @@ public class CPlayer : MonoBehaviour {
 	}
 
 	[RPC]
+//	[Command]
 	void SetItemCount(int ic) {
 		iItemCount = ic;
 	}
