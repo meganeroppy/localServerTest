@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class DrothySample : MonoBehaviour {
+public class DrothySample : NetworkBehaviour {
 
+    [SyncVar]
     private Transform owner;
 	public void SetOwner( Transform owner )
     {
