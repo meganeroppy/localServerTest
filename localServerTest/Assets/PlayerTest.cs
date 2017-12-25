@@ -2,7 +2,8 @@
 using System.Collections;
 using UnityEngine.Networking;
 
-public class PlayerTest : MonoBehaviour {
+public class PlayerTest : NetworkBehaviour
+{
 	private Rigidbody myRigidbody;
 	public float fSpeed = 10f;
 	private NetworkView netView = null;
@@ -11,6 +12,9 @@ public class PlayerTest : MonoBehaviour {
 	private NetworkTransform nTransform = null;
 	private NetworkIdentity nIdentity = null;
 
+    [SerializeField]
+    private DrothySample drothyPrefab;
+
 	// Use this for initialization
 	void Start () {
 		myRigidbody = GetComponent<Rigidbody>();
@@ -18,6 +22,11 @@ public class PlayerTest : MonoBehaviour {
 		textItem = GetComponentInChildren<TextMesh>();
 		nTransform = GetComponent<NetworkTransform>();
 		nIdentity = GetComponent<NetworkIdentity>();
+
+        if( isLocalPlayer )
+        {
+            CmdCreateDrothy();
+        }
 	}
 
 	// Update is called once per frame
@@ -52,4 +61,14 @@ public class PlayerTest : MonoBehaviour {
 	void SetItemCount(int ic) {
 		iItemCount = ic;
 	}
+
+    [Command]
+    private void CmdCreateDrothy()
+    {
+        var drothy = Instantiate(drothyPrefab);
+
+        drothy.SetOwner(this.transform);
+
+        NetworkServer.Spawn(drothy.gameObject);
+    }
 }
