@@ -36,6 +36,7 @@ public class PlayerTest : MonoBehaviour {
 		}
 		Vector3 move = new Vector3(
 			Input.GetAxisRaw("Horizontal"),
+            0,
 			Input.GetAxisRaw("Vertical"));
 		myRigidbody.velocity = fSpeed * move.normalized;
 	}
