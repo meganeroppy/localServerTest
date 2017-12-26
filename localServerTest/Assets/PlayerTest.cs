@@ -8,24 +8,35 @@ public class PlayerTest : NetworkBehaviour
 	public float fSpeed = 10f;
 	private NetworkView netView = null;
 	public int iItemCount = 0;
-	private TextMesh textItem = null;
 	private NetworkTransform nTransform = null;
-	private NetworkIdentity nIdentity = null;
+
+	[SyncVar]
+	[SerializeField]
+	private bool isObserver = false;
+
+	[SerializeField]
+	private MeshRenderer observerSign;
 
     [SerializeField]
     private DrothySample drothyPrefab;
 
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
 		myRigidbody = GetComponent<Rigidbody>();
 		netView = GetComponent<NetworkView>();
-		textItem = GetComponentInChildren<TextMesh>();
 		nTransform = GetComponent<NetworkTransform>();
-		nIdentity = GetComponent<NetworkIdentity>();
 
         if( isLocalPlayer )
         {
+			if( isObserver )
+			{
+				gameObject.AddComponent<ObserverSample>();
+				CmdSetObserverSign();
+			}
+				
             CmdCreateDrothy();
+
         }
 		else
 		{
@@ -76,4 +87,10 @@ public class PlayerTest : NetworkBehaviour
 
         NetworkServer.Spawn(drothy.gameObject);
     }
+
+	[Command]
+	private void CmdSetObserverSign()
+	{
+		observerSign.material.color = Color.red;
+	}
 }
