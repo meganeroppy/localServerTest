@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class PlayerSampleTracked : MonoBehaviour {
+public class PlayerSampleTracked : NetworkBehaviour {
 
 	[SerializeField]
 	private CopyTransform[] objs;
@@ -11,7 +12,14 @@ public class PlayerSampleTracked : MonoBehaviour {
 	void Start () {
 		foreach( CopyTransform c in objs )
 		{
-			c.copySource = GameObject.Find(  "Tracker_" + c.gameObject.name );
+			if( isLocalPlayer )
+			{
+				c.copySource = GameObject.Find(  "Tracker_" + c.gameObject.name );
+			}
+			else
+			{
+				c.enabled = false;
+			}
 		}
 	}
 	
