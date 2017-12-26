@@ -10,8 +10,8 @@ public class PlayerTest : NetworkBehaviour
 	public int iItemCount = 0;
 	private NetworkTransform nTransform = null;
 
-	[SyncVar]
 	[SerializeField]
+	[SyncVar]
 	private bool isObserver = false;
 
 	[SerializeField]
@@ -34,7 +34,7 @@ public class PlayerTest : NetworkBehaviour
 				gameObject.AddComponent<ObserverSample>();
 				CmdSetObserverSign();
 			}
-				
+
             CmdCreateDrothy();
 
         }
