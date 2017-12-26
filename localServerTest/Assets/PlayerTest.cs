@@ -27,6 +27,11 @@ public class PlayerTest : NetworkBehaviour
         {
             CmdCreateDrothy();
         }
+		else
+		{
+			// カメラ無効
+			GetComponent<Camera>().enabled = false;
+		}
 	}
 
 	// Update is called once per frame
