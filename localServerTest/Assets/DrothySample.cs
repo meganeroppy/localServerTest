@@ -7,9 +7,14 @@ public class DrothySample : NetworkBehaviour {
 
     [SyncVar]
     private Transform owner;
+
+	[SyncVar]
+	private bool initialized = false;
+
 	public void SetOwner( Transform owner )
     {
         this.owner = owner;
+		initialized = true;
     }
 	
 	// Update is called once per frame
@@ -19,5 +24,10 @@ public class DrothySample : NetworkBehaviour {
         {
             transform.SetPositionAndRotation(owner.position, owner.rotation);
         }
+		else if( initialized )
+		{
+			// 初期化後にマスターがいなくなったら削除
+			Destroy( gameObject );
+		}
 	}
 }
