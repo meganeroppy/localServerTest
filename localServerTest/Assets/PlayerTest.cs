@@ -5,8 +5,9 @@ using UnityEngine.Networking;
 public class PlayerTest : NetworkBehaviour
 {
 	private Rigidbody myRigidbody;
-	public float fSpeed = 10f;
-	private NetworkView netView = null;
+    public float moveSpeed = 10f;
+    public float rotSpeed = 10f;
+    private NetworkView netView = null;
 	public int iItemCount = 0;
 	private NetworkTransform nTransform = null;
 
@@ -63,8 +64,16 @@ public class PlayerTest : NetworkBehaviour
 			Input.GetAxisRaw("Horizontal"),
             0,
 			Input.GetAxisRaw("Vertical"));
-		myRigidbody.velocity = fSpeed * move.normalized;
-	}
+        transform.Translate( move * moveSpeed * Time.deltaTime);
+        //	myRigidbody.velocity = (transform.forward + move.normalized) * fSpeed ;
+
+        var rot = Input.GetKey(KeyCode.I) ? -1 : Input.GetKey(KeyCode.O) ? 1 : 0;
+        if( rot != 0 )
+        {
+            transform.Rotate(Vector3.up * rot * rotSpeed * Time.deltaTime);
+        }
+
+    }
 
 	[RPC]//
 	void GetItem(int add) {
