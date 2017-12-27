@@ -112,6 +112,8 @@ public class PlayerTest : NetworkBehaviour
     [Command]
     private void CmdFire()
     {
+        Debug.Log(System.Reflection.MethodBase.GetCurrentMethod());
+
         var obj = Instantiate(bulletPrefab);
         obj.transform.position = transform.position;
         obj.GetComponent<Rigidbody>().AddForce(transform.forward * 80f);
