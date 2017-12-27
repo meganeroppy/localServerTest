@@ -12,14 +12,14 @@ public class WaitSceneManager : MonoBehaviour
 
 	// Use this for initialization
 	void Start () {
-		
+		Destroy( GameObject.Find("Manager") );
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if( Input.GetKeyDown( KeyCode.T ) )
         {
-            SceneManager.LoadScene("LobbyPractce");
+            SceneManager.LoadScene("LobbyPractice");
         }
 
         if( autoRetryToJoinHost )
@@ -27,7 +27,7 @@ public class WaitSceneManager : MonoBehaviour
             timer += Time.deltaTime;
             if( timer >= wait )
             {
-                SceneManager.LoadScene("LobbyPractce");
+                SceneManager.LoadScene("LobbyPractice");
                 autoRetryToJoinHost = false;
             }
         }
