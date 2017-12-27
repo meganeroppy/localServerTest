@@ -5,6 +5,8 @@ using UnityEngine.Networking;
 
 public class NetworkManagerTest : NetworkBehaviour 
 {
+    public static NetworkManagerTest instance;
+
 	private NetworkManager nManager;
 
     public enum Role
@@ -26,7 +28,19 @@ public class NetworkManagerTest : NetworkBehaviour
     [SerializeField]
     private bool autoExecRole = false;
 
-   // Use this for initialization
+    [SerializeField]
+    private bool isObserver;
+    public bool IsObserver
+    {
+        get { return isObserver; }
+    }
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
+    // Use this for initialization
     void Start()
     {
         nManager = GetComponent<NetworkManager>();

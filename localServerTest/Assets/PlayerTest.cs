@@ -10,7 +10,6 @@ public class PlayerTest : NetworkBehaviour
 	public int iItemCount = 0;
 	private NetworkTransform nTransform = null;
 
-	[SerializeField]
 	[SyncVar]
 	private bool isObserver = false;
 
@@ -29,6 +28,7 @@ public class PlayerTest : NetworkBehaviour
 
         if( isLocalPlayer )
         {
+            isObserver = NetworkManagerTest.instance.IsObserver;
 			if( isObserver )
 			{
 				gameObject.AddComponent<ObserverSample>();
