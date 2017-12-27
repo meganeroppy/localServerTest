@@ -30,27 +30,29 @@ public class PlayerTest : NetworkBehaviour
 		netView = GetComponent<NetworkView>();
 		nTransform = GetComponent<NetworkTransform>();
 
-        if( isLocalPlayer )
-        {
-            isObserver = NetworkManagerTest.instance.IsObserver;
-			if( isObserver )
-			{
-				gameObject.AddComponent<ObserverSample>();
-				CmdSetObserverSign();
-			}
-
-            CmdCreateDrothy();
-
-        }
-		else
+        if( !isLocalPlayer )        
 		{
 			// カメラ無効
 			GetComponent<Camera>().enabled = false;
 		}
 	}
 
-	// Update is called once per frame
-	void Update ()
+    public override void OnStartLocalPlayer()
+    {
+        Debug.Log("ろーかるだよ");
+        isObserver = NetworkManagerTest.instance.IsObserver;
+        if (isObserver)
+        {
+            gameObject.AddComponent<ObserverSample>();
+            CmdSetObserverSign();
+        }
+
+        CmdCreateDrothy();
+
+    }
+
+    // Update is called once per frame
+    void Update ()
     {
 	//	textItem.text = ""+iItemCount;
 
