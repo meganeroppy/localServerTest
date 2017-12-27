@@ -25,7 +25,7 @@ public class PlayerTest : NetworkBehaviour
 
     private void Awake()
     {
-        Debug.Log("Awake");
+        Debug.Log("Awake" + "isObserver = " + isObserver.ToString() + " local= " + isLocalPlayer.ToString());
     }
 
     // Use this for initialization
@@ -44,7 +44,7 @@ public class PlayerTest : NetworkBehaviour
 
     public override void OnStartLocalPlayer()
     {
-        Debug.Log("OnStartLocalPlayer");
+        Debug.Log("OnStartLocalPlayer" + "isObserver = " + isObserver.ToString() + " local= " + isLocalPlayer.ToString());
         isObserver = NetworkManagerTest.instance.IsObserver;
         if (isObserver)
         {
@@ -58,7 +58,7 @@ public class PlayerTest : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        Debug.Log("OnStartClient");
+        Debug.Log("OnStartClient" + "isObserver = " + isObserver.ToString() + " local= " + isLocalPlayer.ToString());
     }
 
     // Update is called once per frame
