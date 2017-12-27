@@ -23,8 +23,13 @@ public class PlayerTest : NetworkBehaviour
     [SerializeField]
     private GameObject bulletPrefab;
 
-	// Use this for initialization
-	void Start () 
+    private void Awake()
+    {
+        Debug.Log("Awake");
+    }
+
+    // Use this for initialization
+    void Start () 
 	{
 		myRigidbody = GetComponent<Rigidbody>();
 		netView = GetComponent<NetworkView>();
@@ -39,7 +44,7 @@ public class PlayerTest : NetworkBehaviour
 
     public override void OnStartLocalPlayer()
     {
-        Debug.Log("ろーかるだよ");
+        Debug.Log("OnStartLocalPlayer");
         isObserver = NetworkManagerTest.instance.IsObserver;
         if (isObserver)
         {
@@ -51,10 +56,17 @@ public class PlayerTest : NetworkBehaviour
 
     }
 
+    public override void OnStartClient()
+    {
+        Debug.Log("OnStartClient");
+    }
+
     // Update is called once per frame
     void Update ()
     {
-	//	textItem.text = ""+iItemCount;
+        //	textItem.text = ""+iItemCount;
+
+        Debug.Log("isObserver = " + isObserver.ToString() + " local= " + isLocalPlayer.ToString());
 
 		if( !nTransform.isLocalPlayer )
 		{
