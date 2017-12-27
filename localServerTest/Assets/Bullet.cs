@@ -1,12 +1,18 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 
-public class Bullet : MonoBehaviour
+public class Bullet : NetworkBehaviour
 {
     public float lifeTime = 10f;
 
     private void Start()
     {
         Destroy(gameObject, lifeTime);
+    }
+
+    private void OnDestroy()
+    {
+        NetworkServer.Destroy(gameObject);
     }
 
     void OnCollisionEnter(Collision collision)
