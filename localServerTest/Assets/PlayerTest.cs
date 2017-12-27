@@ -100,6 +100,8 @@ public class PlayerTest : NetworkBehaviour
 	[Command]
 	private void CmdSetObserverSign()
 	{
+        // TODO ローカルだけしか赤くならないぞ？なんとかしろ
+
 		observerSign.material.color = Color.red;
 	}
 }
