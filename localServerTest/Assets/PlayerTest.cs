@@ -20,6 +20,9 @@ public class PlayerTest : NetworkBehaviour
     [SerializeField]
     private DrothySample drothyPrefab;
 
+    [SerializeField]
+    private GameObject bulletPrefab;
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -47,14 +50,9 @@ public class PlayerTest : NetworkBehaviour
 	}
 
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
 	//	textItem.text = ""+iItemCount;
-
-	//	if (!netView.isMine)
-	//	{
-	//		return;
-	//	}
-
 
 		if( !nTransform.isLocalPlayer )
 		{
@@ -64,8 +62,10 @@ public class PlayerTest : NetworkBehaviour
 			Input.GetAxisRaw("Horizontal"),
             0,
 			Input.GetAxisRaw("Vertical"));
+
         transform.Translate( move * moveSpeed * Time.deltaTime);
         //	myRigidbody.velocity = (transform.forward + move.normalized) * fSpeed ;
+
 
         var rot = Input.GetKey(KeyCode.I) ? -1 : Input.GetKey(KeyCode.O) ? 1 : 0;
         if( rot != 0 )
@@ -73,6 +73,10 @@ public class PlayerTest : NetworkBehaviour
             transform.Rotate(Vector3.up * rot * rotSpeed * Time.deltaTime);
         }
 
+        if( Input.GetKeyDown( KeyCode.Space ) )
+        {
+            CmdFire();
+        }
     }
 
 	[RPC]//
@@ -104,4 +108,15 @@ public class PlayerTest : NetworkBehaviour
 
 		observerSign.material.color = Color.red;
 	}
+
+    [Command]
+    private void CmdFire()
+    {
+        var obj = Instantiate(bulletPrefab);
+        obj.transform.position = transform.position;
+        obj.GetComponent<Rigidbody>().AddForce(transform.forward * 80f);
+        obj.GetComponent<MeshRenderer>().material.color = observerSign.material.color;
+
+        NetworkServer.Spawn(obj);
+    }
 }
