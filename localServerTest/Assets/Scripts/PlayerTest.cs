@@ -62,6 +62,12 @@ public class PlayerTest : NetworkBehaviour
 
         CmdCreateDrothy();
 
+        CmdSetNetIdStr();
+    }
+
+    [Command]
+    private void CmdSetNetIdStr()
+    {
         netIdStr = netId.Value.ToString();
     }
 
@@ -77,7 +83,9 @@ public class PlayerTest : NetworkBehaviour
 
         Debug.Log("isObserver = " + isObserver.ToString() + " local= " + isLocalPlayer.ToString());
 
-		if( !nTransform.isLocalPlayer )
+        textMesh.text = netIdStr;
+
+        if ( !nTransform.isLocalPlayer )
 		{
 			return;
 		}
@@ -108,7 +116,6 @@ public class PlayerTest : NetworkBehaviour
 
         isObserverPrev = isObserver;
 
-        textMesh.text = netIdStr;
     }
 
 	[RPC]//
