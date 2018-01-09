@@ -13,6 +13,7 @@ public class PlayerTest : NetworkBehaviour
 
 	[SyncVar]
 	private bool isObserver = false;
+    private bool isObserverPrev = false;
 
 	[SerializeField]
 	private MeshRenderer observerSign;
@@ -40,17 +41,20 @@ public class PlayerTest : NetworkBehaviour
 			// カメラ無効
 			GetComponent<Camera>().enabled = false;
 		}
+
+        isObserverPrev = isObserver;
 	}
 
     public override void OnStartLocalPlayer()
     {
         Debug.Log("OnStartLocalPlayer" + "isObserver = " + isObserver.ToString() + " local= " + isLocalPlayer.ToString());
         isObserver = NetworkManagerTest.instance.IsObserver;
-        if (isObserver)
-        {
-            gameObject.AddComponent<ObserverSample>();
-            CmdSetObserverSign(isObserver);
-        }
+
+     //   if (isObserver)
+     //   {
+     //       gameObject.AddComponent<ObserverSample>();
+     //       CmdSetObserverSign(isObserver);
+     //   }
 
         CmdCreateDrothy();
 
@@ -91,6 +95,13 @@ public class PlayerTest : NetworkBehaviour
         {
             CmdFire();
         }
+
+        if( isObserver != isObserverPrev )
+        {
+            observerSign.material.color = isObserver ? Color.red : Color.white;
+        }
+
+        isObserverPrev = isObserver;
     }
 
 	[RPC]//
