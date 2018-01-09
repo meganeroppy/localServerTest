@@ -52,7 +52,6 @@ public class PlayerTest : NetworkBehaviour
     public override void OnStartLocalPlayer()
     {
         Debug.Log("OnStartLocalPlayer" + "isObserver = " + isObserver.ToString() + " local= " + isLocalPlayer.ToString());
-        isObserver = NetworkManagerTest.instance.IsObserver;
 
      //   if (isObserver)
      //   {
@@ -63,6 +62,8 @@ public class PlayerTest : NetworkBehaviour
         CmdCreateDrothy();
 
         CmdSetNetIdStr();
+
+        CmdSetIsObserver();
     }
 
     [Command]
@@ -141,13 +142,12 @@ public class PlayerTest : NetworkBehaviour
     }
 
 	[Command]
-	private void CmdSetObserverSign( bool isObserver )
+	private void CmdSetIsObserver()
 	{
         // TODO ローカルだけしか赤くならないぞ？なんとかしろ
 
-        if( isObserver )
-    		observerSign.material.color = Color.red;
-	}
+        isObserver = NetworkManagerTest.instance.IsObserver;
+    }
 
     [Command]
     private void CmdFire()
