@@ -86,6 +86,15 @@ public class PlayerTest : NetworkBehaviour
 
         textMesh.text = netIdStr;
 
+        if( isObserver != isObserverPrev )
+        {
+            observerSign.material.color = isObserver ? Color.red : Color.white;
+        }
+
+        isObserverPrev = isObserver;
+
+        // ■ここから↓はローカルプレイヤーのみ■
+
         if ( !nTransform.isLocalPlayer )
 		{
 			return;
@@ -109,14 +118,6 @@ public class PlayerTest : NetworkBehaviour
         {
             CmdFire();
         }
-
-        if( isObserver != isObserverPrev )
-        {
-            observerSign.material.color = isObserver ? Color.red : Color.white;
-        }
-
-        isObserverPrev = isObserver;
-
     }
 
 	[RPC]//
