@@ -27,6 +27,9 @@ public class PlayerTest : NetworkBehaviour
     [SerializeField]
     private TextMesh textMesh;
 
+    [SyncVar]
+    private string netIdStr;
+
     private void Awake()
     {
         Debug.Log("Awake" + "isObserver = " + isObserver.ToString() + " local= " + isLocalPlayer.ToString());
@@ -58,6 +61,8 @@ public class PlayerTest : NetworkBehaviour
      //   }
 
         CmdCreateDrothy();
+
+        netIdStr = netId.Value.ToString();
     }
 
     public override void OnStartClient()
@@ -103,7 +108,7 @@ public class PlayerTest : NetworkBehaviour
 
         isObserverPrev = isObserver;
 
-        textMesh.text = this.netId.Value.ToString();
+        textMesh.text = netIdStr;
     }
 
 	[RPC]//
