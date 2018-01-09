@@ -24,6 +24,9 @@ public class PlayerTest : NetworkBehaviour
     [SerializeField]
     private GameObject bulletPrefab;
 
+    [SerializeField]
+    private TextMesh textMesh;
+
     private void Awake()
     {
         Debug.Log("Awake" + "isObserver = " + isObserver.ToString() + " local= " + isLocalPlayer.ToString());
@@ -55,7 +58,6 @@ public class PlayerTest : NetworkBehaviour
      //   }
 
         CmdCreateDrothy();
-
     }
 
     public override void OnStartClient()
@@ -100,6 +102,8 @@ public class PlayerTest : NetworkBehaviour
         }
 
         isObserverPrev = isObserver;
+
+        textMesh.text = this.netId.Value.ToString();
     }
 
 	[RPC]//
