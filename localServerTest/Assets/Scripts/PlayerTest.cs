@@ -63,7 +63,7 @@ public class PlayerTest : NetworkBehaviour
 
         CmdSetNetIdStr();
 
-        CmdSetIsObserver();
+        CmdSetIsObserver(NetworkManagerTest.instance.IsObserver);
     }
 
     [Command]
@@ -142,11 +142,11 @@ public class PlayerTest : NetworkBehaviour
     }
 
 	[Command]
-	private void CmdSetIsObserver()
+	private void CmdSetIsObserver( bool value )
 	{
         // TODO ローカルだけしか赤くならないぞ？なんとかしろ
 
-        isObserver = NetworkManagerTest.instance.IsObserver;
+        isObserver = value;
     }
 
     [Command]
