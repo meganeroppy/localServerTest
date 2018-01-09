@@ -41,8 +41,6 @@ public class PlayerTest : NetworkBehaviour
 			// カメラ無効
 			GetComponent<Camera>().enabled = false;
 		}
-
-        isObserverPrev = isObserver;
 	}
 
     public override void OnStartLocalPlayer()
