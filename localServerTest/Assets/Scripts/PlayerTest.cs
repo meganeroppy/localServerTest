@@ -27,6 +27,9 @@ public class PlayerTest : NetworkBehaviour
     [SerializeField]
     private TextMesh textMesh;
 
+    [SerializeField]
+    private GameObject youIcon;
+
     [SyncVar]
     private string netIdStr;
 
@@ -93,6 +96,8 @@ public class PlayerTest : NetworkBehaviour
 
         isObserverPrev = isObserver;
 
+        youIcon.SetActive(isLocalPlayer);
+
         // ■ここから↓はローカルプレイヤーのみ■
 
         if ( !nTransform.isLocalPlayer )
@@ -145,8 +150,6 @@ public class PlayerTest : NetworkBehaviour
 	[Command]
 	private void CmdSetIsObserver( bool value )
 	{
-        // TODO ローカルだけしか赤くならないぞ？なんとかしろ
-
         isObserver = value;
     }
 
