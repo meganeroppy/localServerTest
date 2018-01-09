@@ -25,6 +25,9 @@ public class PlayerTest : NetworkBehaviour
     private GameObject bulletPrefab;
 
     [SerializeField]
+    private GameObject mushroomPrefab;
+
+    [SerializeField]
     private TextMesh textMesh;
 
     [SerializeField]
@@ -104,6 +107,7 @@ public class PlayerTest : NetworkBehaviour
 		{
 			return;
 		}
+
 		Vector3 move = new Vector3(
 			Input.GetAxisRaw("Horizontal"),
             0,
@@ -122,6 +126,11 @@ public class PlayerTest : NetworkBehaviour
         if( Input.GetKeyDown( KeyCode.Space ) )
         {
             CmdFire();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && isObserver)
+        {
+            CmdCreateMushroom();
         }
     }
 
@@ -164,5 +173,15 @@ public class PlayerTest : NetworkBehaviour
         obj.GetComponent<MeshRenderer>().material.color = observerSign.material.color;
 
         NetworkServer.Spawn(obj);
+    }
+
+    [Command]
+    private void CmdCreateMushroom()
+    {
+        var obj = Instantiate(mushroomPrefab);
+        obj.transform.position = transform.position;
+
+        NetworkServer.Spawn(obj);
+
     }
 }
