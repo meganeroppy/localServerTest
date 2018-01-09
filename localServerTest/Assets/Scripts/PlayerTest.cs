@@ -49,7 +49,7 @@ public class PlayerTest : NetworkBehaviour
         if (isObserver)
         {
             gameObject.AddComponent<ObserverSample>();
-            CmdSetObserverSign();
+            CmdSetObserverSign(isObserver);
         }
 
         CmdCreateDrothy();
@@ -116,11 +116,12 @@ public class PlayerTest : NetworkBehaviour
     }
 
 	[Command]
-	private void CmdSetObserverSign()
+	private void CmdSetObserverSign( bool isObserver )
 	{
         // TODO ローカルだけしか赤くならないぞ？なんとかしろ
 
-		observerSign.material.color = Color.red;
+        if( isObserver )
+    		observerSign.material.color = Color.red;
 	}
 
     [Command]
