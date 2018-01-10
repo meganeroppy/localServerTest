@@ -47,7 +47,7 @@ public class PlayerTest : NetworkBehaviour
     /// <summary>
     /// つかんでいるアイテム
     /// </summary>
-    private GameObject holdItem = null;
+    private Mushroom holdItem = null;
 
 
 
@@ -150,7 +150,7 @@ public class PlayerTest : NetworkBehaviour
 
         if( holdTarget && !holdItem && Input.GetKeyDown(KeyCode.H))
         {
-            holdItem = holdTarget;
+            holdItem = holdTarget.GetComponent<Mushroom>();
             holdTarget = null;
             CmdSetHoldItem();
         }
@@ -159,6 +159,7 @@ public class PlayerTest : NetworkBehaviour
         if (holdItem)
         {
             holdItem.transform.position = holdPos.position;
+            holdItem.CmdSetPosition(holdPos.position);
 
             if( Input.GetKeyDown(KeyCode.Y))
             {
@@ -239,7 +240,7 @@ public class PlayerTest : NetworkBehaviour
     [Command]
     private void CmdSetHoldItem()
     {
-        holdItem = holdTarget;
+        holdItem = holdTarget.GetComponent<Mushroom>();
         holdTarget = null;
     }
 
@@ -249,6 +250,6 @@ public class PlayerTest : NetworkBehaviour
     {
         if (!holdItem) return;
 
-        NetworkServer.Destroy(holdItem);
+        NetworkServer.Destroy(holdItem.gameObject);
     }
 }
