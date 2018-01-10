@@ -116,6 +116,12 @@ public class PlayerTest : NetworkBehaviour
 
         youIcon.SetActive(isLocalPlayer);
 
+        if (holdItem)
+        {
+            holdItem.transform.position = holdPos.position;
+            holdItem.CmdSetPosition(holdPos.position);
+        }
+
         // ■ここから↓はローカルプレイヤーのみ■
 
         if ( !nTransform.isLocalPlayer )
@@ -156,21 +162,12 @@ public class PlayerTest : NetworkBehaviour
             CmdSetHoldItem();
         }
 
-
-        if (holdItem)
+        if (holdItem && Input.GetKeyDown(KeyCode.Y))
         {
-            holdItem.transform.position = holdPos.position;
-            holdItem.CmdSetPosition(holdPos.position);
-
-            if( Input.GetKeyDown(KeyCode.Y))
-            {
-                CmdEatItem();
-            }
+            CmdEatItem();
         }
 
-        
-
-        if( holdTarget && Vector3.Distance( transform.position, holdTarget.transform.position ) > 5f)
+        if ( holdTarget && Vector3.Distance( transform.position, holdTarget.transform.position ) > 5f)
         {
             holdTarget = null;
         }
