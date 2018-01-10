@@ -11,6 +11,8 @@ public class Mushroom : NetworkBehaviour
     private float lifeTime = 5f;
     private float timer = 0;
 
+    private NetworkTransform nTrans;
+
     [ServerCallback]
     private void Awake()
     {
@@ -20,6 +22,8 @@ public class Mushroom : NetworkBehaviour
         }
 
         list.Add(this);
+
+        nTrans = GetComponent<NetworkTransform>();
     }
 
     public GameObject parent
@@ -58,4 +62,11 @@ public class Mushroom : NetworkBehaviour
             list.Remove(this);
         }
     }
+
+    [Command]
+    public void CmdSetPosition( Vector3 pos )
+    {
+        transform.position = pos;
+    }
+
 }

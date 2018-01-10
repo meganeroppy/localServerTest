@@ -36,7 +36,17 @@ public class PlayerTest : NetworkBehaviour
     [SyncVar]
     private string netIdStr;
 
-    
+    /// <summary>
+    /// つかめる距離にあるアイテム
+    /// </summary>
+    private GameObject holdTarget = null;
+
+    /// <summary>
+    /// つかんでいるアイテム
+    /// </summary>
+    private GameObject holdItem = null;
+
+
 
     private void Awake()
     {
@@ -135,9 +145,29 @@ public class PlayerTest : NetworkBehaviour
             CmdCreateMushroom();
         }
 
-        if (Input.GetKeyDown(KeyCode.Y))
+        if( holdTarget && !holdItem && Input.GetKeyDown(KeyCode.T))
         {
-       //     CmdEatItem();
+            holdItem = holdTarget;
+            holdTarget = null;
+            CmdSetHoldItem();
+        }
+
+
+        if (holdItem)
+        {
+            holdItem.transform.position = transform.position;
+
+            if( Input.GetKeyDown(KeyCode.Y))
+            {
+                CmdEatItem();
+            }
+        }
+
+        
+
+        if( holdTarget && Vector3.Distance( transform.position, holdTarget.transform.position ) > 5f)
+        {
+            holdTarget = null;
         }
     }
 
@@ -199,17 +229,31 @@ public class PlayerTest : NetworkBehaviour
 
         if( other.tag.Equals("Item") )
         {
+            holdTarget = other.gameObject;
+
+            /*
             var mush = other.GetComponent<Mushroom>();
             if ( mush != null)
             {
                 mush.CmdRemove();
             }
+            */
         }
     }
 
     [Command]
-    private void CmdEatItem( GameObject item )
+    private void CmdSetHoldItem()
     {
-        NetworkServer.Destroy(item);
+        holdItem = holdTarget;
+        holdTarget = null;
+    }
+
+
+    [Command]
+    private void CmdEatItem( )
+    {
+        if (!holdItem) return;
+
+        NetworkServer.Destroy(holdItem);
     }
 }
