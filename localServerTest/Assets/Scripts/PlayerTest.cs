@@ -20,6 +20,7 @@ public class PlayerTest : NetworkBehaviour
 
     [SerializeField]
     private DrothySample drothyPrefab;
+    private DrothySample drothy;
 
     [SerializeField]
     private GameObject bulletPrefab;
@@ -41,6 +42,9 @@ public class PlayerTest : NetworkBehaviour
 
     [SyncVar]
     private int eatCount = 0;
+
+    [SyncVar]
+    private float drothyScale = 1f;
 
     /// <summary>
     /// つかめる距離にあるアイテム
@@ -102,7 +106,7 @@ public class PlayerTest : NetworkBehaviour
     }
 
     // Update is called once per frame
-    void Update ()
+    void Update()
     {
         //	textItem.text = ""+iItemCount;
 
@@ -110,7 +114,7 @@ public class PlayerTest : NetworkBehaviour
 
         textMesh.text = netIdStr;
 
-        if( isObserver != isObserverPrev )
+        if (isObserver != isObserverPrev)
         {
             observerSign.material.color = isObserver ? Color.red : Color.white;
         }
@@ -126,6 +130,10 @@ public class PlayerTest : NetworkBehaviour
         }
 
         // ■ここから↓はローカルプレイヤーのみ■
+        if (drothy != null)
+        {
+            drothy.transform.localScale = Vector3.one * drothyScale;
+        }
 
         if ( !nTransform.isLocalPlayer )
 		{
@@ -191,8 +199,7 @@ public class PlayerTest : NetworkBehaviour
     [Command]
     private void CmdCreateDrothy()
     {
-        var drothy = Instantiate(drothyPrefab);
-
+        drothy = Instantiate(drothyPrefab);
         drothy.SetOwner(this.transform);
 
         NetworkServer.Spawn(drothy.gameObject);
@@ -269,6 +276,6 @@ public class PlayerTest : NetworkBehaviour
     [Server]
     private void ChangeScale()
     {
-        transform.localScale = Vector3.one * 10f;
+        drothyScale = 10f;
     }
 }
