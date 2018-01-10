@@ -36,6 +36,9 @@ public class PlayerTest : NetworkBehaviour
     [SyncVar]
     private string netIdStr;
 
+    [SerializeField]
+    private Transform holdPos;
+
     /// <summary>
     /// つかめる距離にあるアイテム
     /// </summary>
@@ -155,7 +158,7 @@ public class PlayerTest : NetworkBehaviour
 
         if (holdItem)
         {
-            holdItem.transform.position = transform.position;
+            holdItem.transform.position = holdPos.position;
 
             if( Input.GetKeyDown(KeyCode.Y))
             {
