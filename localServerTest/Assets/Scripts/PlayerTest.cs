@@ -39,6 +39,9 @@ public class PlayerTest : NetworkBehaviour
     [SerializeField]
     private Transform holdPos;
 
+    [SyncVar]
+    private int eatCount = 0;
+
     /// <summary>
     /// つかめる距離にあるアイテム
     /// </summary>
@@ -250,5 +253,22 @@ public class PlayerTest : NetworkBehaviour
         if (!holdItem) return;
 
         NetworkServer.Destroy(holdItem.gameObject);
+        eatCount++;
+
+        if( eatCount >= 3 && !biggenFlag )
+        {
+            biggenFlag = true;
+            ChangeScale();
+        }
+    }
+
+    [SyncVar]
+    private bool biggenFlag = false;
+
+
+    [Server]
+    private void ChangeScale()
+    {
+        transform.localScale = Vector3.one * 10f;
     }
 }
