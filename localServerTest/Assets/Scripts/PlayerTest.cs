@@ -233,14 +233,6 @@ public class PlayerTest : NetworkBehaviour
         if( other.tag.Equals("Item") )
         {
             holdTarget = other.gameObject;
-
-            /*
-            var mush = other.GetComponent<Mushroom>();
-            if ( mush != null)
-            {
-                mush.CmdRemove();
-            }
-            */
         }
     }
 
