@@ -36,6 +36,8 @@ public class PlayerTest : NetworkBehaviour
     [SyncVar]
     private string netIdStr;
 
+    
+
     private void Awake()
     {
         Debug.Log("Awake" + "isObserver = " + isObserver.ToString() + " local= " + isLocalPlayer.ToString());
@@ -132,6 +134,11 @@ public class PlayerTest : NetworkBehaviour
         {
             CmdCreateMushroom();
         }
+
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+       //     CmdEatItem();
+        }
     }
 
 	[RPC]//
@@ -180,8 +187,29 @@ public class PlayerTest : NetworkBehaviour
     {
         var obj = Instantiate(mushroomPrefab);
         obj.transform.position = transform.position;
+        var mush = obj.GetComponent<Mushroom>();
+        mush.CmdSetParent(this.gameObject);
 
         NetworkServer.Spawn(obj);
+    }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (isObserver) return;
+
+        if( other.tag.Equals("Item") )
+        {
+            var mush = other.GetComponent<Mushroom>();
+            if ( mush != null)
+            {
+                mush.CmdRemove();
+            }
+        }
+    }
+
+    [Command]
+    private void CmdEatItem( GameObject item )
+    {
+        NetworkServer.Destroy(item);
     }
 }
