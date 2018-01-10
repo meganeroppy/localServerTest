@@ -145,7 +145,7 @@ public class PlayerTest : NetworkBehaviour
             CmdCreateMushroom();
         }
 
-        if( holdTarget && !holdItem && Input.GetKeyDown(KeyCode.T))
+        if( holdTarget && !holdItem && Input.GetKeyDown(KeyCode.H))
         {
             holdItem = holdTarget;
             holdTarget = null;
