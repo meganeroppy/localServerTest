@@ -152,6 +152,7 @@ public class PlayerTest : NetworkBehaviour
         {
             holdItem = holdTarget.GetComponent<Mushroom>();
             holdTarget = null;
+            Debug.Log("CmdSetHoldItemをコール");
             CmdSetHoldItem();
         }
 
