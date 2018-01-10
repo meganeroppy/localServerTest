@@ -203,6 +203,16 @@ public class PlayerTest : NetworkBehaviour
         drothy.SetOwner(this.transform);
 
         NetworkServer.Spawn(drothy.gameObject);
+
+        RpcPassDrothyReference(drothy.netId);
+    }
+
+    [ClientRpc]
+    private void RpcPassDrothyReference( NetworkInstanceId netId )
+    {
+        var obj = ClientScene.FindLocalObject(netId);
+
+        drothy = obj.GetComponent<DrothySample>();
     }
 
 	[Command]
