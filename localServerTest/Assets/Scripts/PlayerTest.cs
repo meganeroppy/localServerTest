@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class PlayerTest : NetworkBehaviour
 {
@@ -46,6 +47,9 @@ public class PlayerTest : NetworkBehaviour
     [SyncVar]
     private float drothyScale = 1f;
 
+    [SyncVar]
+    private int currentSceneIndex = 0;
+
     /// <summary>
     /// つかめる距離にあるアイテム
     /// </summary>
@@ -56,7 +60,8 @@ public class PlayerTest : NetworkBehaviour
     /// </summary>
     private Mushroom holdItem = null;
 
-
+    [SerializeField]
+    private string[] sceneNameList;
 
     private void Awake()
     {
@@ -165,7 +170,13 @@ public class PlayerTest : NetworkBehaviour
             CmdCreateMushroom();
         }
 
-        if( holdTarget && !holdItem && Input.GetKeyDown(KeyCode.H))
+        if (Input.GetKeyDown(KeyCode.N) && isObserver)
+        {
+            CmdGotoNextScene();
+        }
+
+
+        if ( holdTarget && !holdItem && Input.GetKeyDown(KeyCode.H))
         {
             holdItem = holdTarget.GetComponent<Mushroom>();
             holdTarget = null;
@@ -263,7 +274,6 @@ public class PlayerTest : NetworkBehaviour
         holdTarget = null;
     }
 
-
     [Command]
     private void CmdEatItem( )
     {
@@ -282,10 +292,36 @@ public class PlayerTest : NetworkBehaviour
     [SyncVar]
     private bool biggenFlag = false;
 
-
     [Server]
     private void ChangeScale()
     {
         drothyScale = 10f;
+    }
+
+    [Command]
+    private void CmdGotoNextScene()
+    {
+        Debug.Log(System.Reflection.MethodBase.GetCurrentMethod());
+
+        currentSceneIndex++;
+        RpcGotoNextScene(currentSceneIndex, true);
+    }
+
+    [ClientRpc]
+    private void RpcGotoNextScene( int newSceneIndex, bool allowLoadSameScene )
+    {
+        Debug.Log(System.Reflection.MethodBase.GetCurrentMethod());
+
+        if (currentSceneIndex != newSceneIndex || allowLoadSameScene)
+        {
+            currentSceneIndex = newSceneIndex;
+
+            SceneManager.LoadScene(sceneNameList[currentSceneIndex % sceneNameList.Length], LoadSceneMode.Additive);
+
+            if (currentSceneIndex >= 1)
+            {
+            SceneManager.UnloadSceneAsync(sceneNameList[(currentSceneIndex - 1) % sceneNameList.Length]);
+            }
+        }
     }
 }
