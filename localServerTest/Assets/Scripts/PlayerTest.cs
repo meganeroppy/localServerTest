@@ -50,6 +50,9 @@ public class PlayerTest : NetworkBehaviour
     [SyncVar]
     private int currentSceneIndex = 0;
 
+    [SerializeField]
+    private bool forceBehaveLikePlayer = false;
+
     /// <summary>
     /// つかめる距離にあるアイテム
     /// </summary>
@@ -258,7 +261,7 @@ public class PlayerTest : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (isObserver) return;
+        if (isObserver && !forceBehaveLikePlayer) return;
 
         if( other.tag.Equals("Item") )
         {
