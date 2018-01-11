@@ -137,11 +137,12 @@ public class PlayerTest : NetworkBehaviour
             holdItem.CmdSetPosition(holdPos.position);
         }
 
-        // ■ここから↓はローカルプレイヤーのみ■
         if (drothy != null)
         {
             drothy.transform.localScale = Vector3.one * drothyScale;
         }
+
+        // ■ここから↓はローカルプレイヤーのみ■
 
         if ( !nTransform.isLocalPlayer )
 		{
@@ -273,6 +274,8 @@ public class PlayerTest : NetworkBehaviour
     private void CmdSetHoldItem()
     {
         Debug.Log(System.Reflection.MethodBase.GetCurrentMethod());
+        if (!holdTarget) return;
+
         holdItem = holdTarget.GetComponent<Mushroom>();
         holdTarget = null;
     }
