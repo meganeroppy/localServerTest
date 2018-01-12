@@ -63,7 +63,7 @@ public class Mushroom : NetworkBehaviour
         }
     }
 
-    [Command]
+//    [Command]
     public void CmdSetPosition( Vector3 pos )
     {
         Debug.Log(System.Reflection.MethodBase.GetCurrentMethod());

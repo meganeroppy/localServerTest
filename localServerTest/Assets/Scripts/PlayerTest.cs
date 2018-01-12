@@ -126,9 +126,9 @@ public class PlayerTest : NetworkBehaviour
 
         if (holdItem)
         {
-            holdItem.transform.position = holdPos.position;
-            holdItem.GetComponent<NetworkIdentity>().AssignClientAuthority( connectionToClient );
-            holdItem.CmdSetPosition(holdPos.position);
+//            holdItem.transform.position = holdPos.position;
+ //           holdItem.GetComponent<NetworkIdentity>().AssignClientAuthority( connectionToClient );
+            CmdUpdateHoldItemPosition();
         }
 
         if (drothy != null)
@@ -330,6 +330,12 @@ public class PlayerTest : NetworkBehaviour
     private void ChangeScale()
     {
         drothyScale = 10f;
+    }
+
+    [Command]
+    private void CmdUpdateHoldItemPosition()
+    {
+        holdItem.CmdSetPosition(holdPos.position);
     }
 
     [Command]
