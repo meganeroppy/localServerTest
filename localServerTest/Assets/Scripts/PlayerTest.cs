@@ -193,6 +193,8 @@ public class PlayerTest : NetworkBehaviour
     [Command]
     private void CmdCreateDrothy()
     {
+        Debug.Log(System.Reflection.MethodBase.GetCurrentMethod());
+
         drothy = Instantiate(drothyPrefab);
         drothy.SetOwner(this.transform);
 
@@ -205,6 +207,8 @@ public class PlayerTest : NetworkBehaviour
     [ClientRpc]
     private void RpcPassDrothyReference( NetworkInstanceId netId )
     {
+        Debug.Log(System.Reflection.MethodBase.GetCurrentMethod());
+
         var obj = ClientScene.FindLocalObject(netId);
 
         drothy = obj.GetComponent<DrothySample>();
