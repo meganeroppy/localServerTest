@@ -53,6 +53,9 @@ public class PlayerTest : NetworkBehaviour
     [SerializeField]
     private bool forceBehaveLikePlayer = false;
 
+    [SyncVar]
+    private NetworkInstanceId drothyNetId;
+
     /// <summary>
     /// つかめる距離にあるアイテム
     /// </summary>
@@ -131,11 +134,15 @@ public class PlayerTest : NetworkBehaviour
 //            CmdUpdateHoldItemPosition();
         }
 
-        if (!isServer)
+        if (isClient)
         {
             if (drothy == null)
             {
-                CmdRequestDrothyReference();
+                var obj = ClientScene.FindLocalObject(drothyNetId);
+                if( !obj )
+                {
+                    drothy = obj.GetComponent<DrothySample>();
+                }
             }
 
             if (drothy != null)
@@ -207,6 +214,8 @@ public class PlayerTest : NetworkBehaviour
 
 //        NetworkServer.Spawn(drothy.gameObject);
         NetworkServer.SpawnWithClientAuthority(drothy.gameObject, gameObject);
+
+        drothyNetId = drothy.netId;
 
         RpcPassDrothyReference(drothy.netId);
     }
