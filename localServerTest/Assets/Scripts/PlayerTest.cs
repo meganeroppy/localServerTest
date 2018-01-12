@@ -297,7 +297,7 @@ public class PlayerTest : NetworkBehaviour
 
         // つかんでいるプレイヤーに権限を与える
         var nIdentity = holdItem.GetComponent<NetworkIdentity>();
-        if (nIdentity != null)
+        if (nIdentity != null && !nIdentity.hasAuthority)
         {
             nIdentity.AssignClientAuthority(connectionToClient);
         }
