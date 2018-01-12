@@ -131,6 +131,11 @@ public class PlayerTest : NetworkBehaviour
 //            CmdUpdateHoldItemPosition();
         }
 
+        if( drothy == null )
+        {
+            CmdRequestDrothyReference();
+        }
+
         if (drothy != null)
         {
             drothy.transform.localScale = Vector3.one * drothyScale;
@@ -214,7 +219,14 @@ public class PlayerTest : NetworkBehaviour
         drothy = obj.GetComponent<DrothySample>();
     }
 
-	[Command]
+    [Command]
+    private void CmdRequestDrothyReference()
+    {
+        if (drothy == null) return;
+        RpcPassDrothyReference(drothy.netId);
+    }
+
+    [Command]
 	private void CmdSetIsObserver( bool value )
 	{
         isObserver = value;
