@@ -131,16 +131,18 @@ public class PlayerTest : NetworkBehaviour
 //            CmdUpdateHoldItemPosition();
         }
 
-        if( drothy == null )
+        if (!isServer)
         {
-            CmdRequestDrothyReference();
-        }
+            if (drothy == null)
+            {
+                CmdRequestDrothyReference();
+            }
 
-        if (drothy != null)
-        {
-            drothy.transform.localScale = Vector3.one * drothyScale;
+            if (drothy != null)
+            {
+                drothy.transform.localScale = Vector3.one * drothyScale;
+            }
         }
-
         // ■ここから↓はローカルプレイヤーのみ■
 
         if ( !nTransform.isLocalPlayer )
