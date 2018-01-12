@@ -42,7 +42,7 @@ public class Mushroom : NetworkBehaviour
     }
 
 
-    [Command]
+//    [Command]
     public void CmdSetParent(GameObject obj )
     {
         parent = obj;
