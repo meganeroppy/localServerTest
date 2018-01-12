@@ -126,9 +126,9 @@ public class PlayerTest : NetworkBehaviour
 
         if (holdItem)
         {
-//            holdItem.transform.position = holdPos.position;
+            holdItem.transform.position = holdPos.position;
  //           holdItem.GetComponent<NetworkIdentity>().AssignClientAuthority( connectionToClient );
-            CmdUpdateHoldItemPosition();
+//            CmdUpdateHoldItemPosition();
         }
 
         if (drothy != null)
@@ -295,6 +295,7 @@ public class PlayerTest : NetworkBehaviour
 
         holdTarget = null;
 
+        // つかんでいるプレイヤーに権限を与える
         var nIdentity = holdItem.GetComponent<NetworkIdentity>();
         if (nIdentity != null)
         {
