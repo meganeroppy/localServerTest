@@ -139,7 +139,7 @@ public class PlayerTest : NetworkBehaviour
             if (drothy == null)
             {
                 var obj = ClientScene.FindLocalObject(drothyNetId);
-                if( !obj )
+                if( obj )
                 {
                     drothy = obj.GetComponent<DrothySample>();
                 }
