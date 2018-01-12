@@ -292,7 +292,14 @@ public class PlayerTest : NetworkBehaviour
         if (!holdTarget) return;
 
         holdItem = holdTarget.GetComponent<Mushroom>();
+
         holdTarget = null;
+
+        var nIdentity = holdItem.GetComponent<NetworkIdentity>();
+        if (nIdentity != null)
+        {
+            nIdentity.AssignClientAuthority(connectionToClient);
+        }
 
         RpcSetHoldItem();
     }
