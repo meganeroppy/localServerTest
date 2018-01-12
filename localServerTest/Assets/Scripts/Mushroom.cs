@@ -48,7 +48,7 @@ public class Mushroom : NetworkBehaviour
         parent = obj;
     }
 
-    [Command]
+ //   [Command]
     public void CmdRemove()
     {
         NetworkServer.Destroy(gameObject);
