@@ -224,7 +224,8 @@ public class PlayerTest : NetworkBehaviour
         var obj = Instantiate(bulletPrefab);
         obj.transform.position = transform.position;
         obj.GetComponent<Rigidbody>().AddForce(transform.forward * 80f);
-        obj.GetComponent<MeshRenderer>().material.color = observerSign.material.color;
+        obj.GetComponent<MeshRenderer>().material.color = isObserver ? Color.red : Color.white;
+
 
         NetworkServer.Spawn(obj);
     }

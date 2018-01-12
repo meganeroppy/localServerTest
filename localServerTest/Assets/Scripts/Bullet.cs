@@ -9,7 +9,17 @@ public class Bullet : NetworkBehaviour
     {
         Destroy(gameObject, lifeTime);
     }
+    /*
+    private void  WaitAndDestroy()
+    {
+        yield return new WaitForSeconds(lifeTime);
 
+        NetworkServer.Destroy(gameObject);
+
+    }
+    */
+
+    [ServerCallback]
     private void OnDestroy()
     {
         NetworkServer.Destroy(gameObject);
