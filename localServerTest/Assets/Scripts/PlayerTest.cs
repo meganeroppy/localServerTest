@@ -127,6 +127,7 @@ public class PlayerTest : NetworkBehaviour
         if (holdItem)
         {
             holdItem.transform.position = holdPos.position;
+            holdItem.GetComponent<NetworkIdentity>().AssignClientAuthority( connectionToClient );
             holdItem.CmdSetPosition(holdPos.position);
         }
 
