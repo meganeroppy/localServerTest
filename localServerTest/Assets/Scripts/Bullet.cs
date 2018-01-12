@@ -9,7 +9,6 @@ public class Bullet : NetworkBehaviour
     [ServerCallback]
     private void Start()
     {
-        //    Destroy(gameObject, lifeTime);
         StartCoroutine(WaitAndDestroy());
     }
     
@@ -20,12 +19,6 @@ public class Bullet : NetworkBehaviour
         NetworkServer.Destroy(gameObject);
     }
     
-    [ServerCallback]
-    private void OnDestroy()
-    {
-    //    NetworkServer.Destroy(gameObject);
-    }
-
     void OnCollisionEnter(Collision collision)
 	{
 		var hit = collision.gameObject;
