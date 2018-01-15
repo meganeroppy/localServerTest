@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class PlayerTest : NetworkBehaviour
 {
@@ -46,17 +47,27 @@ public class PlayerTest : NetworkBehaviour
     [SyncVar]
     private float drothyScale = 1f;
 
+    [SyncVar]
+    private int currentSceneIndex = 0;
+
+    [SerializeField]
+    private bool forceBehaveLikePlayer = false;
+
+    [SyncVar]
+    private NetworkInstanceId drothyNetId;
+
     /// <summary>
     /// つかめる距離にあるアイテム
     /// </summary>
-    private GameObject holdTarget = null;
+    private Mushroom holdTarget = null;
 
     /// <summary>
     /// つかんでいるアイテム
     /// </summary>
     private Mushroom holdItem = null;
 
-
+    [SerializeField]
+    private string[] sceneNameList;
 
     private void Awake()
     {
@@ -72,20 +83,15 @@ public class PlayerTest : NetworkBehaviour
 
         if( !isLocalPlayer )        
 		{
-			// カメラ無効
-			GetComponent<Camera>().enabled = false;
+            // カメラ無効
+            var camera = GetComponentInChildren<Camera>();
+            if (camera.gameObject) camera.gameObject.SetActive(false);
 		}
 	}
 
     public override void OnStartLocalPlayer()
     {
         Debug.Log("OnStartLocalPlayer" + "isObserver = " + isObserver.ToString() + " local= " + isLocalPlayer.ToString());
-
-     //   if (isObserver)
-     //   {
-     //       gameObject.AddComponent<ObserverSample>();
-     //       CmdSetObserverSign(isObserver);
-     //   }
 
         CmdCreateDrothy();
 
@@ -110,8 +116,6 @@ public class PlayerTest : NetworkBehaviour
     {
         //	textItem.text = ""+iItemCount;
 
-        Debug.Log("isObserver = " + isObserver.ToString() + " local= " + isLocalPlayer.ToString());
-
         textMesh.text = netIdStr;
 
         if (isObserver != isObserverPrev)
@@ -126,14 +130,27 @@ public class PlayerTest : NetworkBehaviour
         if (holdItem)
         {
             holdItem.transform.position = holdPos.position;
-            holdItem.CmdSetPosition(holdPos.position);
+ //           holdItem.GetComponent<NetworkIdentity>().AssignClientAuthority( connectionToClient );
+//            CmdUpdateHoldItemPosition();
         }
 
-        // ■ここから↓はローカルプレイヤーのみ■
-        if (drothy != null)
+        if (isClient)
         {
-            drothy.transform.localScale = Vector3.one * drothyScale;
+            if (drothy == null)
+            {
+                var obj = ClientScene.FindLocalObject(drothyNetId);
+                if( obj )
+                {
+                    drothy = obj.GetComponent<DrothySample>();
+                }
+            }
+
+            if (drothy != null)
+            {
+                drothy.transform.localScale = Vector3.one * drothyScale;
+            }
         }
+        // ■ここから↓はローカルプレイヤーのみ■
 
         if ( !nTransform.isLocalPlayer )
 		{
@@ -148,7 +165,6 @@ public class PlayerTest : NetworkBehaviour
         transform.Translate( move * moveSpeed * Time.deltaTime);
         //	myRigidbody.velocity = (transform.forward + move.normalized) * fSpeed ;
 
-
         var rot = Input.GetKey(KeyCode.I) ? -1 : Input.GetKey(KeyCode.O) ? 1 : 0;
         if( rot != 0 )
         {
@@ -160,16 +176,19 @@ public class PlayerTest : NetworkBehaviour
             CmdFire();
         }
 
+
         if (Input.GetKeyDown(KeyCode.Space) && isObserver)
         {
             CmdCreateMushroom();
         }
 
-        if( holdTarget && !holdItem && Input.GetKeyDown(KeyCode.H))
+        if (Input.GetKeyDown(KeyCode.N) && isObserver)
         {
-            holdItem = holdTarget.GetComponent<Mushroom>();
-            holdTarget = null;
-            Debug.Log("CmdSetHoldItemをコール");
+            CmdGotoNextScene();
+        }
+
+        if ( holdTarget && !holdItem && Input.GetKeyDown(KeyCode.H))
+        {
             CmdSetHoldItem();
         }
 
@@ -181,28 +200,22 @@ public class PlayerTest : NetworkBehaviour
         if ( holdTarget && Vector3.Distance( transform.position, holdTarget.transform.position ) > 5f)
         {
             holdTarget = null;
+            CmdReleaseHoldTarget();
         }
     }
-
-	[RPC]//
-	void GetItem(int add) {
-		iItemCount += add;
-		netView.RPC("SetItemCount", RPCMode.OthersBuffered, iItemCount);
-	}
-
-	[RPC]
-//	[Command]
-	void SetItemCount(int ic) {
-		iItemCount = ic;
-	}
 
     [Command]
     private void CmdCreateDrothy()
     {
+        Debug.Log(System.Reflection.MethodBase.GetCurrentMethod());
+
         drothy = Instantiate(drothyPrefab);
         drothy.SetOwner(this.transform);
 
-        NetworkServer.Spawn(drothy.gameObject);
+//        NetworkServer.Spawn(drothy.gameObject);
+        NetworkServer.SpawnWithClientAuthority(drothy.gameObject, gameObject);
+
+        drothyNetId = drothy.netId;
 
         RpcPassDrothyReference(drothy.netId);
     }
@@ -210,12 +223,21 @@ public class PlayerTest : NetworkBehaviour
     [ClientRpc]
     private void RpcPassDrothyReference( NetworkInstanceId netId )
     {
+        Debug.Log(System.Reflection.MethodBase.GetCurrentMethod());
+
         var obj = ClientScene.FindLocalObject(netId);
 
         drothy = obj.GetComponent<DrothySample>();
     }
 
-	[Command]
+    [Command]
+    private void CmdRequestDrothyReference()
+    {
+        if (drothy == null) return;
+        RpcPassDrothyReference(drothy.netId);
+    }
+
+    [Command]
 	private void CmdSetIsObserver( bool value )
 	{
         isObserver = value;
@@ -229,11 +251,15 @@ public class PlayerTest : NetworkBehaviour
         var obj = Instantiate(bulletPrefab);
         obj.transform.position = transform.position;
         obj.GetComponent<Rigidbody>().AddForce(transform.forward * 80f);
-        obj.GetComponent<MeshRenderer>().material.color = observerSign.material.color;
+        obj.GetComponent<MeshRenderer>().material.color = isObserver ? Color.red : Color.white;
+
 
         NetworkServer.Spawn(obj);
     }
 
+    /// <summary>
+    /// きのこ配置
+    /// </summary>
     [Command]
     private void CmdCreateMushroom()
     {
@@ -245,24 +271,78 @@ public class PlayerTest : NetworkBehaviour
         NetworkServer.Spawn(obj);
     }
 
+    /// <summary>
+    /// ローカルでのみ判定する
+    /// </summary>
     private void OnTriggerEnter(Collider other)
     {
-        if (isObserver) return;
+        Debug.Log(System.Reflection.MethodBase.GetCurrentMethod());
 
-        if( other.tag.Equals("Item") )
+        if ((isObserver && !forceBehaveLikePlayer) || !isLocalPlayer ) return;
+
+        if (other.tag.Equals("Item"))
         {
-            holdTarget = other.gameObject;
+            var mush = other.GetComponent<Mushroom>();
+            if (mush != null)
+            {
+                holdTarget = mush;
+                CmdSetHoldTarget(mush.netId);
+            } 
         }
+    }
+
+    [Command]
+    private void CmdSetHoldTarget( NetworkInstanceId id )
+    {
+        Debug.Log(System.Reflection.MethodBase.GetCurrentMethod());
+
+        var obj = NetworkServer.FindLocalObject(id);
+        if (!obj) return;
+        var mush = obj.GetComponent<Mushroom>();
+        if( mush != null )
+        {
+            holdTarget = mush;
+        }
+    }
+
+    [Command]
+    private void CmdReleaseHoldTarget()
+    {
+        Debug.Log(System.Reflection.MethodBase.GetCurrentMethod());
+
+        holdTarget = null;
     }
 
     [Command]
     private void CmdSetHoldItem()
     {
         Debug.Log(System.Reflection.MethodBase.GetCurrentMethod());
+        if (!holdTarget) return;
+
         holdItem = holdTarget.GetComponent<Mushroom>();
+
         holdTarget = null;
+
+        // つかんでいるプレイヤーに権限を与える
+        var nIdentity = holdItem.GetComponent<NetworkIdentity>();
+        if (nIdentity != null && !nIdentity.hasAuthority)
+        {
+            nIdentity.AssignClientAuthority(connectionToClient);
+        }
+
+        RpcSetHoldItem();
     }
 
+    [ClientRpc]
+    private void RpcSetHoldItem()
+    {
+        Debug.Log(System.Reflection.MethodBase.GetCurrentMethod());
+        if (!holdTarget) return;
+
+        holdItem = holdTarget.GetComponent<Mushroom>();
+        holdTarget = null;
+
+    }
 
     [Command]
     private void CmdEatItem( )
@@ -282,10 +362,42 @@ public class PlayerTest : NetworkBehaviour
     [SyncVar]
     private bool biggenFlag = false;
 
-
     [Server]
     private void ChangeScale()
     {
         drothyScale = 10f;
+    }
+
+    [Command]
+    private void CmdUpdateHoldItemPosition()
+    {
+        holdItem.CmdSetPosition(holdPos.position);
+    }
+
+    [Command]
+    private void CmdGotoNextScene()
+    {
+        Debug.Log(System.Reflection.MethodBase.GetCurrentMethod());
+
+        currentSceneIndex++;
+        RpcGotoNextScene(currentSceneIndex, true);
+    }
+
+    [ClientRpc]
+    private void RpcGotoNextScene( int newSceneIndex, bool allowLoadSameScene )
+    {
+        Debug.Log(System.Reflection.MethodBase.GetCurrentMethod());
+
+        if (currentSceneIndex != newSceneIndex || allowLoadSameScene)
+        {
+            currentSceneIndex = newSceneIndex;
+
+            SceneManager.LoadScene(sceneNameList[currentSceneIndex % sceneNameList.Length], LoadSceneMode.Additive);
+
+            if (currentSceneIndex >= 1)
+            {
+            SceneManager.UnloadSceneAsync(sceneNameList[(currentSceneIndex - 1) % sceneNameList.Length]);
+            }
+        }
     }
 }

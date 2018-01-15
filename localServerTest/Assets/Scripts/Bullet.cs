@@ -1,20 +1,24 @@
 ﻿using UnityEngine;
+using System.Collections;
 using UnityEngine.Networking;
 
 public class Bullet : NetworkBehaviour
 {
     public float lifeTime = 10f;
 
+    [ServerCallback]
     private void Start()
     {
-        Destroy(gameObject, lifeTime);
+        StartCoroutine(WaitAndDestroy());
     }
-
-    private void OnDestroy()
+    
+    private IEnumerator WaitAndDestroy()
     {
+        yield return new WaitForSeconds(lifeTime);
+
         NetworkServer.Destroy(gameObject);
     }
-
+    
     void OnCollisionEnter(Collision collision)
 	{
 		var hit = collision.gameObject;

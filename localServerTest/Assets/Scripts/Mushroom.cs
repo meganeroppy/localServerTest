@@ -42,13 +42,13 @@ public class Mushroom : NetworkBehaviour
     }
 
 
-    [Command]
+//    [Command]
     public void CmdSetParent(GameObject obj )
     {
         parent = obj;
     }
 
-    [Command]
+ //   [Command]
     public void CmdRemove()
     {
         NetworkServer.Destroy(gameObject);
@@ -63,7 +63,7 @@ public class Mushroom : NetworkBehaviour
         }
     }
 
-    [Command]
+//    [Command]
     public void CmdSetPosition( Vector3 pos )
     {
         Debug.Log(System.Reflection.MethodBase.GetCurrentMethod());
