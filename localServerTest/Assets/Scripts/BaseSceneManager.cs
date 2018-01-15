@@ -24,7 +24,7 @@ public class BaseSceneManager : MonoBehaviour
         for( int i = 0 ; i < presetCameras.Length; ++i )
         {
             presetCameras[i].enabled = true;
-            presetCameras[i].targetDisplay = i+2;
+            presetCameras[i].targetDisplay = i+1;
         }
     }
 }

@@ -98,6 +98,19 @@ public class PlayerTest : NetworkBehaviour
         CmdSetNetIdStr();
 
         CmdSetIsObserver(NetworkManagerTest.instance.IsObserver);
+
+        if(NetworkManagerTest.instance.IsObserver)
+        {
+            var obj = GameObject.Find("BaseSceneManager");
+            if( obj )
+            {
+                var manager = obj.GetComponent<BaseSceneManager>();
+                if( manager != null )
+                {
+                    manager.ActivatePresetCameras();
+                }
+            }
+        }
     }
 
     [Command]
